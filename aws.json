@@ -1,0 +1,6 @@
+{
+ "key": null,
+ "secret": null,
+ "bucket": "bucket.whatever",
+ "region": "us-west-1"
+}

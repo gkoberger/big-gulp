@@ -1,10 +1,13 @@
 var gulp = require('gulp');
+var _ = require('lodash');
 
+var fs = require('fs');
 var concat = require('gulp-concat');
 var stylus = require('gulp-stylus');
 var nib = require('nib');
 var bower = require('gulp-bower');
 var jade = require('gulp-jade');
+var s3 = require('gulp-s3');
 var gulpFilter = require('gulp-filter');
 var connect = require('gulp-connect');
 
@@ -67,6 +70,14 @@ gulp.task('serve', ['watch'], function() {
   connect.server({
     root: 'build',
   });
+});
+
+gulp.task('sync', ['default'], function() {
+  var awsRoot = JSON.parse(fs.readFileSync(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.aws.json'));
+  var awsLocal = JSON.parse(fs.readFileSync('./aws.json'));
+  var aws = _.extend({}, awsLocal, awsRoot);
+
+  gulp.src('build/**').pipe(s3(aws));
 });
 
 // The default task (called when you run `gulp` from cli)
